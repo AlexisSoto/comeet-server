@@ -52,7 +52,7 @@ export function checkToken(token, callback) { // Need to be in redis
   TokenUser.findOne({token: token}).populate('user')
     .exec((err, result)=> { // search if token is already un bdd
         if (err) {
-          console.log('err find TokenUser' + err);
+          console.log(token + 'err find TokenUser' + err);
 
           res.sendStatus(500);
           res.end();
@@ -60,8 +60,8 @@ export function checkToken(token, callback) { // Need to be in redis
         }
         if (!result) {
 
-          console.log('false token token');
-          callback('wrong token');
+          console.log('false token');
+          callback(token +' wrong token '+ result);
         }
         else {
           callback(null, result.user);

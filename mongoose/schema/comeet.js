@@ -48,8 +48,7 @@ const eventSchema = new Schema({
   attendants: [{type: Schema.ObjectId, ref: 'User'}],
   creator: {type: Schema.ObjectId, ref: 'User'},
   creationDate:  { type: Date, default: Date.now }
-
-
+  
 });
 
 module.exports = {

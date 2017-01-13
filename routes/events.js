@@ -5,26 +5,34 @@
  * Created by Mika on 7/25/2016.
  * /services and /services/* pages
  */
-import {checkToken} from '../functions/user';
-import {createEvent} from '../functions/events';
+import {
+  checkToken
+} from '../functions/user';
+import {
+  createEvent
+} from '../functions/events';
 
-var express = require('express')
-  , router = express.Router()
+var express = require('express'),
+  router = express.Router()
 
-import {Event} from '../mongoose/model/comeet';
+import {
+  Event
+} from '../mongoose/model/comeet';
 router.all('/', function (req, res, next) { // Do something for all /event
   next();
 });
 
 router.get('/', function (req, res) {
 
-  checkToken(req.query.token, (err, user)=> {
+  checkToken(req.query.token, (err, user) => {
     if (err) {
-      res.sendStatus(404);
+      console.log(err)
+      res.sendStatus(401);
       res.end();
-    }
-    else {
-      Event.find({creator: user._id}, (err, result)=> { // need to check if user is in this event
+    } else {
+      Event.find({
+        creator: user._id
+      }, (err, result) => { // need to check if user is in this event
         if (err) {
           res.sendStatus(500);
           res.end();
@@ -45,22 +53,20 @@ router.post('/', function (req, res) {
   eventInfos.title = req.body.title;
   eventInfos.date = new Date(req.body.date);
 
-  checkToken(req.query.token, (err, user)=> {
+  checkToken(req.query.token, (err, user) => {
     if (err) {
-      res.sendStatus(404);
+      res.sendStatus(401);
       res.end();
-    }
-    else {
+    } else {
 
       eventInfos.creatorId = user._id; // get Id from token
 
-      createEvent(eventInfos, (err, result)=> {
+      createEvent(eventInfos, (err, result) => {
 
         if (err) {
           res.sendStatus(500);
           res.end();
-        }
-        else {
+        } else {
           res.send(result);
           res.end();
         }
@@ -68,14 +74,57 @@ router.post('/', function (req, res) {
     }
   });
 });
-router.get('/:id', function (req, res) {
-  var id = req.params.id;
-  if (!id) {
-    res.sendStatus(401);
+
+router.put('/:id', function (req, res) {
+  const id = req.params.id;
+  const eventInfos = req.body;
+
+  if (!id || !eventInfos) {
+    res.sendStatus(400);
     res.end();
     return;
   }
-  Event.find({_id: id}, (err, result)=> { // need to check if user is in this event
+  checkToken(req.query.token, (err, user) => {
+    if (err) {
+      res.sendStatus(401);
+      res.end();
+    } else {
+
+      Event.find({
+        _id: id
+      }, (err, result) => { // need to check if user is in this event
+        if (err) {
+          res.sendStatus(404);
+          res.end();
+          return;
+        }
+        console.log('updating with : '+ JSON.stringify(eventInfos))
+        let test = Event.findOneAndUpdate({
+          _id: id
+        },{$set: eventInfos},{new: true},(err,result)=>{
+          if(err)
+          console.log(err)
+          res.send(result);
+        res.end();
+        return;
+        })
+        //console.log(test)
+        
+      })
+    }
+  });
+});
+
+router.get('/:id', function (req, res) {
+  var id = req.params.id;
+  if (!id) {
+    res.sendStatus(400);
+    res.end();
+    return;
+  }
+  Event.find({
+    _id: id
+  }, (err, result) => { // need to check if user is in this event
     if (err) {
       res.sendStatus(404);
       res.end();

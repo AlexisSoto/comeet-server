@@ -87,6 +87,7 @@ app.post('/login', function (req, res) {
     if (!fbRes || fbRes.error) {
       console.log(!fbRes ? 'error occurred' : res.error);
       var error = true;
+      console.log('false fb token')
       res.sendStatus(401);
       res.end();
       return;
@@ -114,7 +115,7 @@ app.post('/login', function (req, res) {
               res.end();
               return;
             }
-            res.end(JSON.stringify({token}));
+            res.end(JSON.stringify({token,first:true}));
             return;
           });
 
@@ -133,7 +134,7 @@ app.post('/login', function (req, res) {
             res.end();
             return;
           }
-          res.end(JSON.stringify({token}));
+          res.end(JSON.stringify({token,first:false}));
           return;
         });
 
