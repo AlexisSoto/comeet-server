@@ -4,7 +4,8 @@
   "description": "A simple server for comeet",
   "main": "server.js",
   "scripts": {
-    "start": "./node_modules/.bin/babel-node server.js --presets es2015,stage-2"
+    "start": "./node_modules/.bin/babel-node server.js --presets es2015,stage-2",
+    "dev":"export MONGODB_URI=mongodb://localhost/comeet || set MONGODB_URI=mongodb://localhost/comeet && npm run start"
   },
   "dependencies": {
     "babel": "^6.5.2",

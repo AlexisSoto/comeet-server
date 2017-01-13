@@ -3,8 +3,9 @@ import session from 'express-session';
 import FB from 'fb';
 import TokenGenerator from 'uuid-token-generator';
 import mongoose from 'mongoose';
+const mongoUri = process.env.MONGODB_URI.trim();
+mongoose.connect(mongoUri);
 
-mongoose.connect('mongodb://localhost/comeet');
 import {User, TokenUser} from './mongoose/model/comeet';
 import {createUser, generateToken, updateFbToken, checkToken, updateUserInfos} from './functions/user';
 
