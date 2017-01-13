@@ -15,7 +15,7 @@ const tokenUserSchema = new Schema({
 
 
 const userSchema = new Schema({
-  fbId: Number,
+  fbId: String,
   firstName: String,
   lastName: String,
   fbToken: String,
@@ -25,10 +25,10 @@ const userSchema = new Schema({
     altitude: Number
   },
   gender: String,
-  profilePic: String,
+  profilePictureUrl: String,
   birthday: Date,
   email: String,
-  createdDate: Date
+  creationDate:  { type: Date, default: Date.now }
 });
 
 
@@ -46,7 +46,9 @@ const eventSchema = new Schema({
   },
   guests: [{type: Schema.ObjectId, ref: 'User'}],
   attendants: [{type: Schema.ObjectId, ref: 'User'}],
-  creator: {type: Schema.ObjectId, ref: 'User'}
+  creator: {type: Schema.ObjectId, ref: 'User'},
+  creationDate:  { type: Date, default: Date.now }
+
 
 });
 

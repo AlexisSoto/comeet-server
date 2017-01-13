@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 
 mongoose.connect('mongodb://localhost/comeet');
 import {User, TokenUser} from './mongoose/model/comeet';
-import {createUser, generateToken, updateFbToken} from './user';
+import {createUser, generateToken, updateFbToken, checkToken, updateUserInfos} from './functions/user';
 
 
 var app = express();
@@ -14,7 +14,7 @@ FB.options({version: 'v2.8'});
 
 var sess = {
   secret: 'keyboard cat',
-  proxy:true,
+  proxy: true,
   resave: false,
   saveUninitialized: false
 }
@@ -47,6 +47,8 @@ app.use(function (req, res, next) {
 
 app.use(function (req, res, next) {
 
+  next();
+  return;
   if (!req.query.token) { // can't access without token
     if (req.originalUrl == '/login') { // can access /login without token
       next();
@@ -57,7 +59,17 @@ app.use(function (req, res, next) {
     }
   }
   else {
-    next();
+    //check if token is valid
+    checkToken(req.query.token, (err, result)=> {
+      if (err) {
+        res.sendStatus(401);
+        res.end();
+      }
+      else {
+        next();
+      }
+
+    })
   }
 });
 // Access the session as req.session
@@ -65,13 +77,15 @@ app.post('/login', function (req, res) {
   const sess = req.session;
   const fbToken = req.body.fbToken;
 
+  console.log(fbToken);
+  console.log("try to login");
+  console.log("body"+JSON.stringify(req.body));
   FB.setAccessToken(fbToken);
-  const fbfields = ['id', 'first_name', 'last_name', 'email', 'birthday', 'picture', 'likes', 'gender', 'location'];
+  const fbfields = ['id', 'first_name', 'last_name', 'email', 'birthday', 'picture', 'gender', 'location','friends'];
 
   FB.api('me', {fields: fbfields, access_token: fbToken}, function (fbRes) {
     if (!fbRes || fbRes.error) {
       console.log(!fbRes ? 'error occurred' : res.error);
-      console.log('coucou')
       var error = true;
       res.sendStatus(401);
       res.end();
@@ -100,16 +114,17 @@ app.post('/login', function (req, res) {
               res.end();
               return;
             }
-            res.end(token);
+            res.end(JSON.stringify({token}));
             return;
           });
 
         });
 
-
       }
       else {
         updateFbToken(result._id, fbToken, ()=> {
+          updateUserInfos(result._id, fbRes, ()=> {
+          })
         });
         generateToken(result._id, (err, token)=> {
           if (err) {
@@ -118,34 +133,9 @@ app.post('/login', function (req, res) {
             res.end();
             return;
           }
-          res.end(token);
+          res.end(JSON.stringify({token}));
           return;
         });
-
-        /*
-         TokenUser.find({user: result._id}, (err, result)=> { // search if user is already un bdd
-         if (err) {
-         console.log('err find TokenUser'+err);
-
-         res.sendStatus(500);
-         res.end();
-         return;
-         }
-
-         if(result<= 0){
-         console.log('generate token');
-         }
-         else{
-         const token = result.token;
-
-         console.log(token);
-
-         res.end(token);
-
-         console.log(res.data);
-         }
-         })
-         */
 
       }
     })
@@ -155,7 +145,8 @@ app.post('/login', function (req, res) {
 
 })
 ;
-// app.use('/services', require('./services'))
-// app.use('/products', require('./products'))
+app.use('/events', require('./routes/events'))
+app.use('/location', require('./routes/location'))
+app.use('/getPlaces', require('./routes/getPlaces'))
 
 app.listen(process.env.PORT || 8080);
