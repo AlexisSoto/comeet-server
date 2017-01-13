@@ -2,11 +2,16 @@
   "name": "comeet-server",
   "version": "0.0.1",
   "description": "A simple server for comeet",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "babel-node server.js --presets es2015,stage-2"
+    "start": "./node_modules/.bin/babel-node server.js --presets es2015,stage-2",
+    "dev":"export MONGODB_URI=mongodb://localhost/comeet || set MONGODB_URI=mongodb://localhost/comeet && npm run start"
   },
   "dependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-2": "^6.18.0",
     "body-parser": "1.15.2",
     "express": "4.14.0",
     "express-session": "1.14.0",
