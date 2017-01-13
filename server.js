@@ -21,7 +21,7 @@ var sess = {
 
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
+ // sess.cookie.secure = true // serve secure cookies
 }
 
 var bodyParser = require('body-parser')
