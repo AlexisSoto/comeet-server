@@ -2,11 +2,12 @@
   "name": "comeet-server",
   "version": "0.0.1",
   "description": "A simple server for comeet",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "babel-node server.js --presets es2015,stage-2"
+    "start": "./node_modules/.bin/babel-node server.js"
   },
   "dependencies": {
+    "babel": "^6.5.2",
     "body-parser": "1.15.2",
     "express": "4.14.0",
     "express-session": "1.14.0",
