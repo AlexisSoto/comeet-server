@@ -150,5 +150,6 @@ app.post('/login', function (req, res) {
 app.use('/events', require('./routes/events'))
 app.use('/location', require('./routes/location'))
 app.use('/getPlaces', require('./routes/getPlaces'))
+app.use('/me', require('./routes/me'))
 
 app.listen(process.env.PORT || 8080);
