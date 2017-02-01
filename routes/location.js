@@ -7,6 +7,10 @@
  */
 var express = require('express')
   , router = express.Router()
+
+import {
+  User
+} from '../mongoose/model/comeet';
 import {findMiddle} from '../functions/location'
 
 router.all('/', function (req, res, next) { // Do something for all /location
@@ -16,11 +20,25 @@ router.all('/', function (req, res, next) { // Do something for all /location
 
 router.post('/', function (req, res) {
 
+  let userNameList = req.body.usersName.split(',');
+  let lastNameList = userNameList.map((u)=>u.split(' ')[1])
+  console.log(lastNameList)
+  User.find({lastName:{$in:lastNameList}},(err,result)=>{
 
-  let result = findMiddle(req.body.locations);
+    let location = [];
+    result.forEach((r)=>{ location.push({latitude:r.homeLocation.latitude, longitude:r.homeLocation.longitude})});
+    console.log(location)
+    var test = findMiddle(location)
+    console.log(err)
+    res.send(test);
+    res.end();
 
-  res.send(result);
-  res.end();
+
+  });
+  // let eventId = findMiddle(req.body.eventName);
+  // Event.findOne({_id:eventId})
+
+  //res.send(result);
 
 });
 
