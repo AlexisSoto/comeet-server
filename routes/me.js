@@ -40,7 +40,7 @@ router.put('/', function (req, res) {
   let eventInfos = {};
   console.log(req.body);
   eventInfos = req.body;
-  let homeLocation = {latitude:eventInfos.latitude,longitude:eventInfos.longitude,altitude:eventInfos.altitude}
+  let homeLocation = {latitude:eventInfos.latitude,longitude:eventInfos.longitude,altitude:0}
   checkToken(req.query.token, (err, user) => {
     if (err) {
       res.sendStatus(401);
