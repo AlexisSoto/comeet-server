@@ -38,6 +38,7 @@ router.get('/', function (req, res) {
 
 router.put('/', function (req, res) {
   let eventInfos = {};
+  console.log(req.body);
   eventInfos = req.body;
   let homeLocation = {latitude:eventInfos.latitude,longitude:eventInfos.longitude,altitude:eventInfos.altitude}
   checkToken(req.query.token, (err, user) => {
