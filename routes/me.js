@@ -46,7 +46,7 @@ router.put('/', function (req, res) {
       res.sendStatus(401);
       res.end();
     } else {
-      User.findOneAndUpdate({_id: user._id},{$set: homeLocation},{new: false},(err,result)=>{
+      User.findOneAndUpdate({_id: user._id},{$set: {homeLocation}},{new: false},(err,result)=>{
         if(err)
           console.log(err)
         res.send(result);
