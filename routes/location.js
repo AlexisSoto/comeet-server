@@ -11,6 +11,11 @@ var express = require('express')
 import {
   User
 } from '../mongoose/model/comeet';
+
+import {
+  checkToken
+} from '../functions/user';
+
 import {findMiddle} from '../functions/location'
 
 router.all('/', function (req, res, next) { // Do something for all /location
