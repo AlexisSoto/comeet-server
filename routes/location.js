@@ -21,19 +21,32 @@ router.all('/', function (req, res, next) { // Do something for all /location
 router.post('/', function (req, res) {
 
   let userNameList = req.body.usersName.split(',');
-  let lastNameList = userNameList.map((u)=>u.split(' ')[1])
+  let lastNameList = userNameList.map((u)=>u.trim().split(' ')[1])
   console.log(lastNameList)
-  User.find({lastName:{$in:lastNameList}},(err,result)=>{
 
-    let location = [];
-    result.forEach((r)=>{ location.push({latitude:r.homeLocation.latitude, longitude:r.homeLocation.longitude})});
-    console.log(location)
-    var test = findMiddle(location)
-    console.log(err)
-    res.send(test);
-    res.end();
+  checkToken(req.query.token, (err, user) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(401);
+      res.end();
+      return;
+    }
+   User.find({lastName: {$in: lastNameList}}, (err, result) => {
+
+      let location = [];
+      result.forEach((r) => {
+        location.push({latitude: r.homeLocation.latitude, longitude: r.homeLocation.longitude})
+      });
+     location.push({latitude: user.homeLocation.latitude, longitude: user.homeLocation.longitude})
+
+     console.log(location)
+      var test = findMiddle(location)
+      console.log(err)
+      res.send(test);
+      res.end();
 
 
+    });
   });
   // let eventId = findMiddle(req.body.eventName);
   // Event.findOne({_id:eventId})
