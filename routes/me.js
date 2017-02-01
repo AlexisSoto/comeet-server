@@ -39,13 +39,13 @@ router.get('/', function (req, res) {
 router.put('/', function (req, res) {
   let eventInfos = {};
   eventInfos = req.body;
-
+  let homeLocation = {latitude:eventInfos.latitude,longitude:eventInfos.longitude,altitude:eventInfos.altitude}
   checkToken(req.query.token, (err, user) => {
     if (err) {
       res.sendStatus(401);
       res.end();
     } else {
-      User.findOneAndUpdate({_id: user._id},{$set: eventInfos},{new: false},(err,result)=>{
+      User.findOneAndUpdate({_id: user._id},{$set: homeLocation},{new: false},(err,result)=>{
         if(err)
           console.log(err)
         res.send(result);
