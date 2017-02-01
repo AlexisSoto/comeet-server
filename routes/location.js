@@ -46,7 +46,7 @@ router.post('/', function (req, res) {
 
      console.log(location)
       var test = findMiddle(location)
-      console.log(err)
+      console.log(test)
       res.send(test);
       res.end();
 
